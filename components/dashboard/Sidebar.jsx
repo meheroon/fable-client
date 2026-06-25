@@ -66,7 +66,7 @@ export default function Sidebar() {
       <h2 className="text-3xl font-bold mb-8">Dashboard</h2>
 
       {role === "admin" && (
-        <div className="space-y-4">
+        <div className="mt-8 flex flex-col gap-4">
           <Link href="/dashboard/admin">Dashboard Home</Link>
 
           <Link href="/dashboard/admin/manage-users">
@@ -84,7 +84,7 @@ export default function Sidebar() {
       )}
 
       {role === "writer" && (
-        <div className="space-y-4">
+        <div className="mt-8 flex flex-col gap-4">
           <Link href="/dashboard/writer">
             Dashboard Home
           </Link>
@@ -104,7 +104,7 @@ export default function Sidebar() {
       )}
 
       {role === "user" && (
-        <div className="space-y-4">
+        <div className="mt-8 flex flex-col gap-4">
           <Link href="/dashboard/user">
             Dashboard Home
           </Link>
