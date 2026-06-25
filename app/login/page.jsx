@@ -40,21 +40,30 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = async () => {
-    setError("");
+  setError("");
 
-    try {
-      const result = await googleLogin();
-      const email = result.user.email;
+  try {
+    const result = await googleLogin();
+    const loggedUser = result.user;
 
-      const dbUser = await saveToken(email);
+    const res = await axios.post(`${apiUrl}/social-login`, {
+      name: loggedUser.displayName || "Google User",
+      email: loggedUser.email,
+      photo: loggedUser.photoURL || "",
+      role: "user",
+    });
 
-      if (dbUser.role === "admin") router.push("/dashboard/admin");
-      else if (dbUser.role === "writer") router.push("/dashboard/writer");
-      else router.push("/");
-    } catch (err) {
-      setError("Google login failed. Register first if account does not exist.");
-    }
-  };
+    localStorage.setItem("fable-token", res.data.token);
+
+    const dbUser = res.data.user;
+
+    if (dbUser.role === "admin") router.push("/dashboard/admin");
+    else if (dbUser.role === "writer") router.push("/dashboard/writer");
+    else router.push("/");
+  } catch (err) {
+    setError(err.message || "Google login failed");
+  }
+};
 
   return (
     <section className="min-h-screen bg-slate-50 px-4 py-16">
