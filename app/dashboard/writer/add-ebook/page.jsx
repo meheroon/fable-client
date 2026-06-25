@@ -33,7 +33,23 @@ export default function AddEbookPage() {
 
       <form onSubmit={handleSubmit} className="mt-6 grid max-w-2xl gap-4">
         <input name="title" placeholder="Title" className="border p-3" required />
-        <input name="genre" placeholder="Genre" className="border p-3" required />
+        {/* <input name="genre" placeholder="Genre" className="border p-3" required /> */}
+        <select
+            name="genre"
+            required
+            className="w-full border p-4"
+            defaultValue=""
+            >
+            <option value="" disabled>
+                Select Genre
+            </option>
+            <option value="Fiction">Fiction</option>
+            <option value="Mystery">Mystery</option>
+            <option value="Romance">Romance</option>
+            <option value="Sci-Fi">Sci-Fi</option>
+            <option value="Fantasy">Fantasy</option>
+            <option value="Horror">Horror</option>
+        </select>
         <input name="price" type="number" step="0.01" placeholder="Price" className="border p-3" required />
         <input name="coverImage" placeholder="Cover Image URL" className="border p-3" required />
         <textarea name="description" placeholder="Description" className="border p-3" required />
