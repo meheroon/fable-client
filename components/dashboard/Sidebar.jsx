@@ -54,12 +54,19 @@
 "use client";
 
 import Link from "next/link";
-import useAuth from "@/hooks/useAuth";
+import useRole from "@/hooks/useRole";
 
 export default function Sidebar() {
-  const { user } = useAuth();
+  const { role, roleLoading } = useRole();
 
-  const role = user?.role || "user";
+  if (roleLoading) {
+    return (
+      <aside className="bg-slate-950 text-white min-h-screen p-6">
+        <h2 className="text-3xl font-bold mb-8">Dashboard</h2>
+        <p>Loading...</p>
+      </aside>
+    );
+  }
 
   return (
     <aside className="bg-slate-950 text-white min-h-screen p-6">
@@ -68,54 +75,26 @@ export default function Sidebar() {
       {role === "admin" && (
         <div className="mt-8 flex flex-col gap-4">
           <Link href="/dashboard/admin">Dashboard Home</Link>
-
-          <Link href="/dashboard/admin/manage-users">
-            Manage Users
-          </Link>
-
-          <Link href="/dashboard/admin/manage-ebooks">
-            Manage Ebooks
-          </Link>
-
-          <Link href="/dashboard/admin/transactions">
-            Transactions
-          </Link>
+          <Link href="/dashboard/admin/manage-users">Manage Users</Link>
+          <Link href="/dashboard/admin/manage-ebooks">Manage Ebooks</Link>
+          <Link href="/dashboard/admin/transactions">Transactions</Link>
         </div>
       )}
 
       {role === "writer" && (
         <div className="mt-8 flex flex-col gap-4">
-          <Link href="/dashboard/writer">
-            Dashboard Home
-          </Link>
-
-          <Link href="/dashboard/writer/add-ebook">
-            Add Ebook
-          </Link>
-
-          <Link href="/dashboard/writer/manage-ebooks">
-            Manage My Ebooks
-          </Link>
-
-          <Link href="/dashboard/writer/sales">
-            Sales
-          </Link>
+          <Link href="/dashboard/writer">Dashboard Home</Link>
+          <Link href="/dashboard/writer/add-ebook">Add Ebook</Link>
+          <Link href="/dashboard/writer/manage-ebooks">Manage My Ebooks</Link>
+          <Link href="/dashboard/writer/sales">Sales</Link>
         </div>
       )}
 
       {role === "user" && (
         <div className="mt-8 flex flex-col gap-4">
-          <Link href="/dashboard/user">
-            Dashboard Home
-          </Link>
-
-          <Link href="/dashboard/user/bookmarks">
-            Bookmarks
-          </Link>
-
-          <Link href="/dashboard/user/purchases">
-            Purchases
-          </Link>
+          <Link href="/dashboard/user">Dashboard Home</Link>
+          <Link href="/dashboard/user/bookmarks">Bookmarks</Link>
+          <Link href="/dashboard/user/purchases">Purchases</Link>
         </div>
       )}
     </aside>
