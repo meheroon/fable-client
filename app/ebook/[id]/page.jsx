@@ -12,60 +12,16 @@ export default function EbookDetailsPage() {
   const { user } = useAuth();
 
   const [ebook, setEbook] = useState(null);
-  const [purchased, setPurchased] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [payLoading, setPayLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (!id) return;
-
-    const loadEbook = async () => {
-      try {
-        setLoading(true);
-
-        const ebookRes = await axiosPublic.get(`/ebooks/${id}`);
-        setEbook(ebookRes.data);
-
-        if (user?.email) {
-          const purchaseRes = await axiosSecure.get(
-            `/purchases/check/${user.email}/${id}`
-          );
-          setPurchased(purchaseRes.data?.purchased || false);
-        }
-      } catch (err) {
-        setError("Ebook not found or failed to load.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadEbook();
-  }, [id, user?.email]);
-
-  const handlePurchase = async () => {
-    if (!user?.email) {
-      router.push("/login");
-      return;
-    }
-
-    try {
-      setPayLoading(true);
-
-      const res = await axiosSecure.post("/create-checkout-session", {
-        ebookId: id,
-        buyerEmail: user.email,
-      });
-
-      if (res.data?.url) {
-        window.location.href = res.data.url;
-      }
-    } catch (err) {
-      alert(err.response?.data?.message || "Payment failed to start.");
-    } finally {
-      setPayLoading(false);
-    }
-  };
+    axiosPublic
+      .get(`/ebooks/${id}`)
+      .then((res) => setEbook(res.data))
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, [id]);
 
   const handleBookmark = async () => {
     if (!user?.email) {
@@ -76,91 +32,73 @@ export default function EbookDetailsPage() {
     try {
       await axiosSecure.post("/bookmarks", {
         userEmail: user.email,
-        ebookId: id,
+        ebookId: ebook._id || ebook.id,
+        ebookTitle: ebook.title,
       });
 
-      alert("Bookmarked successfully.");
-    } catch (err) {
-      alert("Failed to bookmark.");
+      setMessage("Bookmark added successfully.");
+    } catch (error) {
+      setMessage(error?.response?.data?.message || "Bookmark failed.");
     }
   };
 
-  if (loading) {
-    return <p className="p-10 text-center">Loading ebook details...</p>;
-  }
+  const handleBuyNow = async () => {
+    if (!user?.email) {
+      router.push("/login");
+      return;
+    }
 
-  if (error || !ebook) {
-    return <p className="p-10 text-center text-red-600">{error}</p>;
-  }
+    try {
+      const res = await axiosSecure.post("/create-checkout-session", {
+        ebookId: ebook._id || ebook.id,
+        buyerEmail: user.email,
+      });
 
-  const isOwnEbook = user?.email === ebook.writerEmail;
+      if (res.data?.url) {
+        window.location.href = res.data.url;
+      }
+    } catch (error) {
+      setMessage(error?.response?.data?.message || "Payment failed.");
+    }
+  };
+
+  if (loading) return <p className="p-10">Loading ebook...</p>;
+  if (!ebook) return <p className="p-10">Ebook not found.</p>;
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-12">
-      <div className="grid gap-10 md:grid-cols-2">
-        <img
-          src={ebook.coverImage}
-          alt={ebook.title}
-          className="h-[420px] w-full rounded-xl object-cover"
-        />
+    <section className="mx-auto grid max-w-6xl gap-10 px-6 py-16 md:grid-cols-2">
+      <img
+        src={ebook.coverImage || "/placeholder.png"}
+        alt={ebook.title}
+        className="h-[420px] w-full rounded-xl object-cover"
+      />
 
-        <div>
-          <p className="mb-3 text-sm font-semibold text-indigo-600">
-            {ebook.genre}
-          </p>
+      <div>
+        <p className="font-semibold text-indigo-600">{ebook.genre}</p>
+        <h1 className="mt-4 text-4xl font-bold">{ebook.title}</h1>
+        <p className="mt-4 text-slate-700">By <b>{ebook.writerName}</b></p>
+        <p className="mt-6 text-2xl font-bold">${ebook.price}</p>
+        <p className="mt-4">Status: <b>{ebook.status}</b></p>
+        <p className="mt-8 text-slate-700">{ebook.description}</p>
 
-          <h1 className="text-4xl font-bold text-slate-950">{ebook.title}</h1>
+        {message && <p className="mt-5 font-semibold text-red-600">{message}</p>}
 
-          <p className="mt-3 text-slate-600">
-            By <span className="font-semibold">{ebook.writerName}</span>
-          </p>
+        <div className="mt-8 flex gap-4">
+          <button
+            onClick={handleBuyNow}
+            className="rounded-lg bg-indigo-600 px-6 py-3 font-bold text-white"
+          >
+            Buy Now
+          </button>
 
-          <p className="mt-5 text-2xl font-bold">${ebook.price}</p>
-
-          <p className="mt-3">
-            Status:{" "}
-            <span className="font-semibold">
-              {purchased ? "Purchased" : ebook.status || "Available"}
-            </span>
-          </p>
-
-          <p className="mt-6 leading-7 text-slate-700">{ebook.description}</p>
-
-          <div className="mt-8 flex flex-wrap gap-4">
-            <button
-              onClick={handlePurchase}
-              disabled={isOwnEbook || purchased || payLoading}
-              className="rounded-lg bg-indigo-600 px-6 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:bg-slate-400"
-            >
-              {purchased
-                ? "Already Purchased"
-                : payLoading
-                ? "Redirecting..."
-                : "Buy Now"}
-            </button>
-
-            <button
-              onClick={handleBookmark}
-              className="rounded-lg border border-slate-300 px-6 py-3 font-semibold"
-            >
-              Bookmark
-            </button>
-          </div>
-
-          {isOwnEbook && (
-            <p className="mt-4 text-red-600">
-              Writer cannot purchase own ebook.
-            </p>
-          )}
-
-          {purchased && (
-            <div className="mt-8 rounded-xl bg-slate-100 p-5">
-              <h2 className="mb-3 text-xl font-bold">Full Content</h2>
-              <p className="leading-7 text-slate-700">{ebook.content}</p>
-            </div>
-          )}
+          <button
+            onClick={handleBookmark}
+            className="rounded-lg border px-6 py-3 font-bold"
+          >
+            Bookmark
+          </button>
         </div>
       </div>
-    </main>
+    </section>
   );
 }
