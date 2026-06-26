@@ -69,7 +69,7 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="bg-slate-950 text-white min-h-screen p-6">
+    <aside className="bg-slate-950 text-white p-5 md:min-h-screen">
       <h2 className="text-3xl font-bold mb-8">Dashboard</h2>
 
       {role === "admin" && (

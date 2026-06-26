@@ -15,6 +15,7 @@ export default function RegisterPage() {
   const saveUserToDB = async (userData) => {
     const res = await axios.post(`${apiUrl}/register`, userData);
     localStorage.setItem("fable-token", res.data.token);
+    return res.data.user;
   };
 
   const handleRegister = async (e) => {
@@ -44,7 +45,8 @@ export default function RegisterPage() {
         photo: "",
       });
 
-      router.push("/");
+      if (dbUser.role === "writer") router.push("/dashboard/writer");
+      else router.push("/dashboard/user");
     } catch (err) {
       setError(err.message || "Registration failed");
     }
@@ -65,7 +67,7 @@ export default function RegisterPage() {
         photo: loggedUser.photoURL || "",
       });
 
-      router.push("/");
+      router.push("/dashboard/user");
     } catch (err) {
       setError(err.message || "Google registration failed");
     }

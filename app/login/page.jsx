@@ -33,7 +33,7 @@ export default function LoginPage() {
 
       if (dbUser.role === "admin") router.push("/dashboard/admin");
       else if (dbUser.role === "writer") router.push("/dashboard/writer");
-      else router.push("/");
+      else router.push("/dashboard/user");
     } catch (err) {
       setError(err.message || "Login failed");
     }
@@ -59,7 +59,7 @@ export default function LoginPage() {
 
     if (dbUser.role === "admin") router.push("/dashboard/admin");
     else if (dbUser.role === "writer") router.push("/dashboard/writer");
-    else router.push("/");
+    else router.push("/dashboard/user");
   } catch (err) {
     setError(err.message || "Google login failed");
   }
