@@ -19,7 +19,10 @@ function PaymentSuccessContent() {
     axiosSecure
       .post(`/payment-success?session_id=${sessionId}`)
       .then(() => setMessage("Payment completed successfully."))
-      .catch(() => setMessage("Payment completed successfully."));
+      .catch((err) => {
+        console.error(err.response?.data || err.message);
+        setMessage("Payment completed, but purchase save failed.");
+      });
   }, [sessionId]);
 
   return (

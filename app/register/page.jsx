@@ -37,7 +37,7 @@ export default function RegisterPage() {
     try {
       await registerUser(email, password);
 
-      await saveUserToDB({
+      const dbUser = await saveUserToDB({
         name,
         email,
         password,
@@ -53,13 +53,14 @@ export default function RegisterPage() {
   };
 
   const handleGoogleRegister = async () => {
-    setError("");
+  setError("");
+
+  try {
+    const result = await googleLogin();
+    const loggedUser = result.user;
 
     try {
-      const result = await googleLogin();
-      const loggedUser = result.user;
-
-      await saveUserToDB({
+      const dbUser = await saveUserToDB({
         name: loggedUser.displayName || "Google User",
         email: loggedUser.email,
         password: "google-auth",
@@ -67,11 +68,30 @@ export default function RegisterPage() {
         photo: loggedUser.photoURL || "",
       });
 
-      router.push("/dashboard/user");
-    } catch (err) {
-      setError(err.message || "Google registration failed");
+      if (dbUser.role === "writer") router.push("/dashboard/writer");
+      else if (dbUser.role === "admin") router.push("/dashboard/admin");
+      else router.push("/dashboard/user");
+    } catch (dbErr) {
+      if (dbErr.response?.status === 409) {
+        const loginRes = await axios.post(`${apiUrl}/login`, {
+          email: loggedUser.email,
+          password: "google-auth",
+        });
+
+        localStorage.setItem("fable-token", loginRes.data.token);
+
+        const dbUser = loginRes.data.user;
+        if (dbUser.role === "writer") router.push("/dashboard/writer");
+        else if (dbUser.role === "admin") router.push("/dashboard/admin");
+        else router.push("/dashboard/user");
+      } else {
+        throw dbErr;
+      }
     }
-  };
+  } catch (err) {
+    setError(err.response?.data?.message || err.message || "Google registration failed");
+  }
+};
 
   return (
     <section className="min-h-screen bg-slate-50 px-4 py-16">
