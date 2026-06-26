@@ -12,11 +12,20 @@ export default function Navbar() {
   const { user, logoutUser } = useAuth();
   const [open, setOpen] = useState(false);
 
-  const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/browse", label: "Browse Ebooks" },
-    { href: "/dashboard", label: "Dashboard" },
-  ];
+//   const navLinks = [
+//     { href: "/", label: "Home" },
+//     { href: "/browse", label: "Browse Ebooks" },
+//     { href: "/dashboard", label: "Dashboard" },
+//   ];
+const dashboardHref = user
+  ? "/dashboard"
+  : "/login";
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/browse", label: "Browse Ebooks" },
+  { href: dashboardHref, label: "Dashboard" },
+];
 
   const handleLogout = async () => {
     await logoutUser();
