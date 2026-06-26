@@ -102,13 +102,60 @@
 // }
 "use client";
 
-export default function AdminManageEbooksPage() {
+import { useEffect, useState } from "react";
+import RoleRoute from "@/components/shared/RoleRoute";
+import useAuth from "@/hooks/useAuth";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
+
+export default function WriterManageEbooksPage() {
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
+  const [ebooks, setEbooks] = useState([]);
+
+  useEffect(() => {
+    if (!user?.email) return;
+
+    axiosSecure.get(`/writer/ebooks/${user.email}`).then((res) => {
+      setEbooks(res.data || []);
+    });
+  }, [user?.email, axiosSecure]);
+
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-3">Manage Ebooks</h1>
-      <p className="text-slate-600">
-        Admin can review and manage all ebooks here.
-      </p>
-    </div>
+    <RoleRoute allowedRole="writer">
+      <section>
+        <h1 className="text-3xl font-bold">Manage My Ebooks</h1>
+        <p className="mt-2 text-slate-600">
+          View and manage ebooks published by you.
+        </p>
+
+        <div className="mt-6 overflow-x-auto rounded-xl bg-white shadow">
+          <table className="w-full">
+            <thead className="bg-slate-950 text-white">
+              <tr>
+                <th className="p-4 text-left">Title</th>
+                <th className="p-4 text-left">Genre</th>
+                <th className="p-4 text-left">Price</th>
+                <th className="p-4 text-left">Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {ebooks.map((ebook) => (
+                <tr key={ebook._id} className="border-b">
+                  <td className="p-4">{ebook.title}</td>
+                  <td className="p-4">{ebook.genre}</td>
+                  <td className="p-4">${ebook.price}</td>
+                  <td className="p-4 capitalize">{ebook.status || "published"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {ebooks.length === 0 && (
+            <p className="p-5 text-slate-500">No ebooks found.</p>
+          )}
+        </div>
+      </section>
+    </RoleRoute>
   );
 }
