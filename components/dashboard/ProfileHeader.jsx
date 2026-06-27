@@ -33,12 +33,12 @@ export default function ProfileHeader() {
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <Link href="/dashboard/user/purchases" className="rounded-lg bg-white/15 px-4 py-2 font-semibold">
+          {/* <Link href="/dashboard/user/purchases" className="rounded-lg bg-white/15 px-4 py-2 font-semibold">
             My Books
           </Link>
           <Link href="/dashboard/user/bookmarks" className="rounded-lg bg-white/15 px-4 py-2 font-semibold">
             Bookmarks
-          </Link>
+          </Link> */}
           <Link href="/dashboard/profile" className="rounded-lg bg-white px-4 py-2 font-semibold text-slate-900">
             Edit Profile
           </Link>
