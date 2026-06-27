@@ -66,7 +66,15 @@ export default function EbookDetailsPage() {
   if (!ebook) return <p className="p-10">Ebook not found.</p>;
 
   return (
-    <section className="mx-auto grid max-w-6xl gap-10 px-6 py-16 md:grid-cols-2">
+  <section className="mx-auto max-w-6xl px-6 py-10">
+    <button
+      onClick={() => router.push("/browse")}
+      className="mb-6 rounded-lg border px-5 py-2 font-semibold"
+    >
+      ← Back to Browse
+    </button>
+
+    <div className="grid gap-10 md:grid-cols-2">
       <img
         src={ebook.coverImage || "/placeholder.png"}
         alt={ebook.title}
@@ -76,9 +84,13 @@ export default function EbookDetailsPage() {
       <div>
         <p className="font-semibold text-indigo-600">{ebook.genre}</p>
         <h1 className="mt-4 text-4xl font-bold">{ebook.title}</h1>
-        <p className="mt-4 text-slate-700">By <b>{ebook.writerName}</b></p>
+        <p className="mt-4 text-slate-700">
+          By <b>{ebook.writerName}</b>
+        </p>
         <p className="mt-6 text-2xl font-bold">${ebook.price}</p>
-        <p className="mt-4">Status: <b>{ebook.status}</b></p>
+        <p className="mt-4">
+          Status: <b>{ebook.status}</b>
+        </p>
         <p className="mt-8 text-slate-700">{ebook.description}</p>
 
         {message && <p className="mt-5 font-semibold text-red-600">{message}</p>}
@@ -99,6 +111,7 @@ export default function EbookDetailsPage() {
           </button>
         </div>
       </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 }
