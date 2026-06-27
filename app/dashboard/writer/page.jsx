@@ -5,6 +5,7 @@ import Link from "next/link";
 import RoleRoute from "@/components/shared/RoleRoute";
 import useAuth from "@/hooks/useAuth";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
+import ProfileHeader from "@/components/dashboard/ProfileHeader";
 
 export default function WriterDashboardPage() {
   const { user } = useAuth();
@@ -26,6 +27,8 @@ export default function WriterDashboardPage() {
       <div>
         <h1 className="text-3xl font-bold">Writer Dashboard</h1>
         <p className="mt-2 text-slate-600">Manage ebooks, sales and publishing activity.</p>
+
+        <ProfileHeader />
 
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           <div className="rounded-2xl bg-white p-6 shadow">

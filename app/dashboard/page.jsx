@@ -1,21 +1,40 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import useRole from "@/hooks/useRole";
+import useAuth from "@/hooks/useAuth";
 
-export default function DashboardPage() {
-  const router = useRouter();
-  const { role, roleLoading } = useRole();
+export default function ProfilePage() {
+  const { user } = useAuth();
 
-  useEffect(() => {
-    if (roleLoading) return;
+  return (
+    <div>
+      <h1 className="text-3xl font-bold">Edit Profile</h1>
+      <p className="mt-2 text-slate-600">Profile update UI only.</p>
 
-    if (role === "admin") router.replace("/dashboard/admin");
-    else if (role === "writer") router.replace("/dashboard/writer");
-    else if (role === "user") router.replace("/dashboard/user");
-    else router.replace("/login");
-  }, [role, roleLoading, router]);
+      <div className="mt-8 max-w-xl rounded-xl bg-white p-6 shadow">
+        <label className="block font-semibold">Name</label>
+        <input
+          defaultValue={user?.displayName || ""}
+          className="mt-2 w-full rounded-md border px-4 py-3"
+          placeholder="Full name"
+        />
 
-  return <p className="text-lg font-semibold">Redirecting dashboard...</p>;
+        <label className="mt-5 block font-semibold">Email</label>
+        <input
+          defaultValue={user?.email || ""}
+          disabled
+          className="mt-2 w-full rounded-md border bg-slate-100 px-4 py-3"
+        />
+
+        <label className="mt-5 block font-semibold">Bio</label>
+        <textarea
+          className="mt-2 w-full rounded-md border px-4 py-3"
+          placeholder="Write something about yourself"
+        />
+
+        <button className="mt-6 rounded-md bg-indigo-600 px-5 py-3 font-semibold text-white">
+          Save Changes
+        </button>
+      </div>
+    </div>
+  );
 }

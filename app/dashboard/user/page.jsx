@@ -5,6 +5,8 @@ import Link from "next/link";
 import RoleRoute from "@/components/shared/RoleRoute";
 import useAuth from "@/hooks/useAuth";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
+import ProfileHeader from "@/components/dashboard/ProfileHeader";
+
 
 export default function UserDashboardPage() {
   const { user } = useAuth();
@@ -28,9 +30,11 @@ export default function UserDashboardPage() {
     <RoleRoute allowedRole="user">
       <section>
         <h1 className="text-3xl font-bold">Reader Dashboard</h1>
+        
         <p className="mt-2 text-slate-600">
           Track your bookmarks and purchased ebooks.
         </p>
+        <ProfileHeader />
 
         <div className="mt-8 grid gap-6 md:grid-cols-2">
           <Link href="/dashboard/user/purchases" className="rounded-2xl bg-white p-6 shadow">

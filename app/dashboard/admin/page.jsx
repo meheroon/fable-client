@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import RoleRoute from "@/components/shared/RoleRoute";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
+import ProfileHeader from "@/components/dashboard/ProfileHeader";
 
 export default function AdminDashboardPage() {
   const axiosSecure = useAxiosSecure();
@@ -19,8 +20,9 @@ export default function AdminDashboardPage() {
     <RoleRoute allowedRole="admin">
       <div>
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        
         <p className="mt-2 text-slate-600">Monitor users, ebooks and transactions.</p>
-
+        <ProfileHeader />
         <div className="mt-8 grid gap-6 md:grid-cols-5">
           <Stat title="Users" value={stats.totalUsers || 0} />
           <Stat title="Writers" value={stats.totalWriters || 0} />
