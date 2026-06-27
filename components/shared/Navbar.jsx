@@ -55,6 +55,12 @@ const navLinks = [
             </Link>
           ))}
 
+          {user && (
+            <span className="text-sm font-semibold text-slate-700">
+              Hi, {user.displayName || user.email}
+            </span>
+          )}
+
           {user ? (
             <button
               onClick={handleLogout}
@@ -90,6 +96,12 @@ const navLinks = [
                 {link.label}
               </Link>
             ))}
+
+            {user && (
+              <span className="text-sm font-semibold text-slate-700">
+                Hi, {user.displayName || user.email}
+              </span>
+            )}
 
             {user ? (
               <button onClick={handleLogout} className="text-left">

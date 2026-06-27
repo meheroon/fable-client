@@ -4,6 +4,8 @@ import AuthProvider from "@/provider/AuthProvider";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
 
+import ScrollButtons from "@/components/shared/ScrollButtons";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -30,6 +32,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <Navbar />
           <main className="flex-1">{children}</main>
+          <ScrollButtons />
           <Footer />
         </AuthProvider>
       </body>
